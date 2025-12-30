@@ -1,6 +1,10 @@
+import { WiDirectionDown } from "react-icons/wi"
 import Formlogin from "../../components/Formlogin"
 
 const Login = () => {
+
+
+
     return (
         <>
             <div className="md:min-h-screen grid md:grid-cols-2">
@@ -10,11 +14,19 @@ const Login = () => {
                         <h1 className="text-5xl font-bold">Bienvenue sur NEXA</h1>
                         <span className="font-extrabold tex-sm">
                             Gérez vos ressources humaines de manière intelligente et efficace <br />
-                            avec une solution tout-en-un</span>
+                            avec une solution tout-en-un
+                        </span>
+
+                        <div className="mt-10 md:hidden flex text-center justify-center">
+                            <button className="animate-bounce animate-infinite animate-ease-in">
+                                <WiDirectionDown size={120} className="text-[#ff7f23c5]" />
+                            </button>
+                        </div>
 
                     </div>
+
                 </div>
-                <div className="bg-white flex justify-center items-center h-screen">
+                <div className="bg-white flex justify-center items-center h-screen p-1 md:p-0">
                     <div className="sapce-y-4">
                         <div className="text-center flex flex-col mb-6">
                             <img src="/téléchargement (1).png" alt="" className="h-30 object-contain" />
