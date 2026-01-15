@@ -1,4 +1,4 @@
-import { Home, ArrowLeft, Search, Sparkles } from "lucide-react"
+import { Home, ArrowLeft, Sparkles } from "lucide-react"
 import { Link } from "react-router-dom"
 
 const NoFound = () => {
