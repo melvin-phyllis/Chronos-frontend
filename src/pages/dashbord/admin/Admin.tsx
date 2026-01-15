@@ -8,6 +8,10 @@ import Employees from "../../../components/Employees"
 import LeaveManagement from "../../../components/LeaveManagement"
 import Payroll from "../../../components/Payroll"
 import Profile from "../../../components/Profile"
+import AdminSurveys from "../../../components/AdminSurveys"
+import AdminTasks from "../../../components/AdminTasks"
+import TaskCalendar from "../../../components/TaskCalendar"
+import AdvancedStats from "../../../components/AdvancedStats"
 const Admin = () => {
 
     const [linknav, setLinknav] = useState("")
@@ -43,6 +47,22 @@ const Admin = () => {
 
         if (linknav === "/profile") {
             return <Profile />
+        }
+
+        if (linknav === "/surveys") {
+            return <AdminSurveys />
+        }
+
+        if (linknav === "/tasks") {
+            return <AdminTasks />
+        }
+
+        if (linknav === "/task-calendar") {
+            return <TaskCalendar />
+        }
+
+        if (linknav === "/advanced-stats") {
+            return <AdvancedStats />
         }
 
         // Le "default" du switch devient le retour final

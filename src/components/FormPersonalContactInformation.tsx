@@ -61,23 +61,43 @@ const FormPersonalContactInformation = ({ formPersonal, setFormPersonal }: { for
 
                 <div className="grid md:grid-cols-2 gap-4 mb-4">
                     <div>
-                        <label htmlFor="fullname" className="block text-xs font-medium text-gray-600 mb-1.5">
-                            Nom complet
+                        <label htmlFor="name" className="block text-xs font-medium text-gray-600 mb-1.5">
+                            Nom
                         </label>
                         <div className="relative">
                             <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                             <input required
-                                id="fullname"
+                                id="name"
                                 type="text"
-                                name="fullname"
-                                value={formPersonal.fullname}
+                                name="name"
+                                value={formPersonal.name}
                                 onChange={(e) => Handlechange(e)}
-                                placeholder="Entrez le nom complet"
+                                placeholder="Nom"
                                 className="w-full pl-9 pr-3 py-2.5 text-sm bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all"
                             />
                         </div>
                     </div>
 
+                    <div>
+                        <label htmlFor="firstname" className="block text-xs font-medium text-gray-600 mb-1.5">
+                            Prénom
+                        </label>
+                        <div className="relative">
+                            <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                            <input required
+                                id="firstname"
+                                type="text"
+                                name="firstname"
+                                value={formPersonal.firstname}
+                                onChange={(e) => Handlechange(e)}
+                                placeholder="Prénom"
+                                className="w-full pl-9 pr-3 py-2.5 text-sm bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-4 mb-4">
                     <div>
                         <label htmlFor="dateOfBirth" className="block text-xs font-medium text-gray-600 mb-1.5">
                             Date de naissance
@@ -94,53 +114,24 @@ const FormPersonalContactInformation = ({ formPersonal, setFormPersonal }: { for
                             />
                         </div>
                     </div>
-                </div>
 
-                {/* Gender Selection */}
-                <div>
-                    <label className="block text-xs font-medium text-gray-600 mb-1.5">Genre</label>
-                    <div className="grid grid-cols-3 gap-2">
-                        <label className="flex items-center justify-center gap-2 p-2.5 bg-white rounded-lg border border-gray-200 cursor-pointer hover:border-violet-300 hover:bg-violet-50 transition-all">
-                            <input required type="radio" name="gender" value="Homme" checked={formPersonal.gender === "Homme"} onChange={(e) => Handlechange(e)} className="w-3.5 h-3.5 accent-violet-500" />
-                            <span className="text-sm text-gray-700">Homme</span>
-                        </label>
-                        <label className="flex items-center justify-center gap-2 p-2.5 bg-white rounded-lg border border-gray-200 cursor-pointer hover:border-violet-300 hover:bg-violet-50 transition-all">
-                            <input required type="radio" name="gender" value="Femme" checked={formPersonal.gender === "Femme"} onChange={(e) => Handlechange(e)} className="w-3.5 h-3.5 accent-violet-500" />
-                            <span className="text-sm text-gray-700">Femme</span>
-                        </label>
-                        <label className="flex items-center justify-center gap-2 p-2.5 bg-white rounded-lg border border-gray-200 cursor-pointer hover:border-violet-300 hover:bg-violet-50 transition-all">
-                            <input required type="radio" name="gender" value="Autre" checked={formPersonal.gender === "Autre"} onChange={(e) => Handlechange(e)} className="w-3.5 h-3.5 accent-violet-500" />
-                            <span className="text-sm text-gray-700">Autre</span>
-                        </label>
-                    </div>
-                </div>
-
-                <div className="mt-3 gap-4 grid grid-cols-1 md:grid-cols-2">
+                    {/* Gender Selection */}
                     <div>
-                        <label className="block text-xs font-medium text-gray-600 mb-1.5">Password</label>
-
-                        <input required
-                            id="password"
-                            type="password"
-                            name="password"
-                            value={formPersonal.password}
-                            onChange={(e) => Handlechange(e)}
-                            placeholder="********"
-                            className="w-full pl-9 pr-3 py-2.5 text-sm bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all"
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-xs font-medium text-gray-600 mb-1.5">Password</label>
-
-                        <input required
-                            id="passwordconfirm"
-                            type="password"
-                            name="passwordconfirm"
-                            value={formPersonal.passwordconfirm}
-                            onChange={(e) => Handlechange(e)}
-                            placeholder="********"
-                            className="w-full pl-9 pr-3 py-2.5 text-sm bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all"
-                        />
+                        <label className="block text-xs font-medium text-gray-600 mb-1.5">Genre</label>
+                        <div className="grid grid-cols-3 gap-2">
+                            <label className="flex items-center justify-center gap-2 p-2.5 bg-white rounded-lg border border-gray-200 cursor-pointer hover:border-violet-300 hover:bg-violet-50 transition-all">
+                                <input required type="radio" name="gender" value="Homme" checked={formPersonal.gender === "Homme"} onChange={(e) => Handlechange(e)} className="w-3.5 h-3.5 accent-violet-500" />
+                                <span className="text-sm text-gray-700">Homme</span>
+                            </label>
+                            <label className="flex items-center justify-center gap-2 p-2.5 bg-white rounded-lg border border-gray-200 cursor-pointer hover:border-violet-300 hover:bg-violet-50 transition-all">
+                                <input required type="radio" name="gender" value="Femme" checked={formPersonal.gender === "Femme"} onChange={(e) => Handlechange(e)} className="w-3.5 h-3.5 accent-violet-500" />
+                                <span className="text-sm text-gray-700">Femme</span>
+                            </label>
+                            <label className="flex items-center justify-center gap-2 p-2.5 bg-white rounded-lg border border-gray-200 cursor-pointer hover:border-violet-300 hover:bg-violet-50 transition-all">
+                                <input required type="radio" name="gender" value="Autre" checked={formPersonal.gender === "Autre"} onChange={(e) => Handlechange(e)} className="w-3.5 h-3.5 accent-violet-500" />
+                                <span className="text-sm text-gray-700">Autre</span>
+                            </label>
+                        </div>
                     </div>
                 </div>
             </div>

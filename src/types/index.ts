@@ -1,10 +1,9 @@
 export type FormPersonalType = {
-    fullname: string;
+    name: string;
+    firstname: string;
     dateOfBirth: string;
     gender: string;
     email: string;
-    password: string,
-    passwordconfirm: string
     phone: {
         countryCode: string;
         phoneNumber: string;
@@ -111,6 +110,7 @@ export type employeeType = {
 
 export type formAddTAskType = {
     _id?: string,
+    id?: string,
     employeeCode?: string
     title: string;
     status: string;
@@ -121,30 +121,48 @@ export type formAddTAskType = {
 
 
 export type formLeaveRequestType = {
-    id?: string;
-    intervaltime: number
-    employeeCode?: string;
-    type: string;
-    startDate: string;
-    endDate: string;
-    reason: string;
-    status: string;
-    requestDate: Date
+    _id?: string;
+    type_conge: string;
+    date_debut: string;
+    date_fin: string;
+    justificatif_texte?: string;
+    statut?: string;
+    // Legacy fields for backwards compatibility
+    type?: string;
+    startDate?: string;
+    endDate?: string;
+    intervaltime?: number;
+}
+
+export type LeaveBalanceType = {
+    conges_payes_total: number;
+    conges_payes_pris: number;
+    conges_payes_restants: number;
+    conges_maladie_pris: number;
+    autres_conges_pris: number;
 }
 
 
-
-export type PaidLeaveType = {
-
-    PaidLeave?: number;
-    SickLeaveOther?: number;
-    UnpaidLeave?: number;
-
-}
-
-
-export type  formDataType = {
+export type formDataType = {
     bankName: string;
     accountNumber: string;
     taxIdentificationNumber: string;
+}
+
+export type PresenceType = {
+    _id: string;
+    user_id: string;
+    date: string;
+    check_in?: string; // Date ISO
+    check_out?: string; // Date ISO
+    duree_travail?: number;
+    statut: "present" | "absent" | "retard";
+    employeeDetails?: employeeType;
+}
+
+export type PaidLeaveType = {
+    PaidLeave?: number;
+    totalDays?: number;
+    usedDays?: number;
+    remainingDays?: number;
 }

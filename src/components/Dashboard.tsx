@@ -1,7 +1,36 @@
-import { ArrowDownRight, ArrowUpRight, Calendar, Clock, DollarSign, MoreHorizontal, TrendingUp, UserCheck, Users } from "lucide-react"
+import { ArrowUpRight, Calendar, Clock, DollarSign, MoreHorizontal, TrendingUp, UserCheck, Users } from "lucide-react"
 import MiniNav from "./MiniNav"
+import { useEffect, useState } from "react"
+import { fetchDashboardStats, type DashboardStats } from "@/controllers/fetchStats"
+import Chart from "react-apexcharts"
+import axios from "axios"
 
 const Dashboard = () => {
+    const [stats, setStats] = useState<DashboardStats | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [topPerformers, setTopPerformers] = useState<{ name: string; tasksCompleted: number }[]>([]);
+
+    useEffect(() => {
+        fetchDashboardStats(setStats, setLoading);
+        fetchTopPerformers();
+    }, []);
+
+    const fetchTopPerformers = async () => {
+        try {
+            const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/stats/top-performers`, { withCredentials: true });
+            if (res.data.success) {
+                setTopPerformers(res.data.data);
+            }
+        } catch (error) {
+            console.error("Error fetching top performers", error);
+        }
+    };
+
+    // Formatage monétaire
+    const formatCurrency = (amount: number) => {
+        return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(amount);
+    };
+
     return (
         <div className="w-full font-medium min-h-screen">
             <header>
@@ -24,16 +53,18 @@ const Dashboard = () => {
                             </div>
                             <p className="text-sm text-gray-500 mb-1">Total Employés</p>
                             <div className="flex items-end justify-between">
-                                <h3 className="text-3xl font-bold text-gray-900">128</h3>
+                                <h3 className="text-3xl font-bold text-gray-900">
+                                    {loading ? "..." : stats?.totalEmployees}
+                                </h3>
                                 <div className="flex items-center gap-1 text-emerald-500 text-sm font-semibold">
                                     <ArrowUpRight className="w-4 h-4" />
-                                    <span>+12%</span>
+                                    <span>Actif</span>
                                 </div>
                             </div>
                         </div>
-                        <div className="bg-linear-to-br from-emerald-50 to-emerald-100 px-5 py-3">
-                            <p className="text-sm text-emerald-700">
-                                <span className="font-semibold">+8 nouveaux</span> ce mois
+                        <div className="bg-linear-to-br from-violet-50 to-violet-100 px-5 py-3">
+                            <p className="text-sm text-violet-700">
+                                Effectif total enregistré
                             </p>
                         </div>
                     </div>
@@ -51,16 +82,23 @@ const Dashboard = () => {
                             </div>
                             <p className="text-sm text-gray-500 mb-1">Présents aujourd'hui</p>
                             <div className="flex items-end justify-between">
-                                <h3 className="text-3xl font-bold text-gray-900">112</h3>
+                                <h3 className="text-3xl font-bold text-gray-900">
+                                    {loading ? "..." : stats?.presentToday}
+                                </h3>
                                 <div className="flex items-center gap-1 text-emerald-500 text-sm font-semibold">
+                                    {/* Taux de présence approximatif ou statique pour l'instant */}
                                     <ArrowUpRight className="w-4 h-4" />
-                                    <span>87.5%</span>
+                                    <span>
+                                        {stats && stats.totalEmployees > 0
+                                            ? Math.round((stats.presentToday / stats.totalEmployees) * 100)
+                                            : 0}%
+                                    </span>
                                 </div>
                             </div>
                         </div>
-                        <div className="bg-linear-to-br from-blue-50 to-blue-100 px-5 py-3">
-                            <p className="text-sm text-blue-700">
-                                <span className="font-semibold">16 absents</span> aujourd'hui
+                        <div className="bg-linear-to-br from-emerald-50 to-emerald-100 px-5 py-3">
+                            <p className="text-sm text-emerald-700">
+                                <span className="font-semibold">{stats ? (stats.totalEmployees - stats.presentToday) : 0} absents</span> (ou non pointés)
                             </p>
                         </div>
                     </div>
@@ -78,16 +116,15 @@ const Dashboard = () => {
                             </div>
                             <p className="text-sm text-gray-500 mb-1">En congé</p>
                             <div className="flex items-end justify-between">
-                                <h3 className="text-3xl font-bold text-gray-900">8</h3>
-                                <div className="flex items-center gap-1 text-amber-500 text-sm font-semibold">
-                                    <ArrowDownRight className="w-4 h-4" />
-                                    <span>-3</span>
-                                </div>
+                                <h3 className="text-3xl font-bold text-gray-900">
+                                    {loading ? "..." : stats?.onLeaveToday}
+                                </h3>
+                                {/* Variation statique pour le moment */}
                             </div>
                         </div>
                         <div className="bg-linear-to-br from-amber-50 to-amber-100 px-5 py-3">
                             <p className="text-sm text-amber-700">
-                                <span className="font-semibold">5 demandes</span> en attente
+                                <span className="font-semibold">{loading ? "..." : stats?.pendingLeaves} demandes</span> en attente
                             </p>
                         </div>
                     </div>
@@ -103,18 +140,16 @@ const Dashboard = () => {
                                     <MoreHorizontal className="w-5 h-5 text-gray-400" />
                                 </button>
                             </div>
-                            <p className="text-sm text-gray-500 mb-1">Masse salariale</p>
+                            <p className="text-sm text-gray-500 mb-1">Masse salariale (Mensuelle)</p>
                             <div className="flex items-end justify-between">
-                                <h3 className="text-3xl font-bold text-gray-900">45.2K €</h3>
-                                <div className="flex items-center gap-1 text-emerald-500 text-sm font-semibold">
-                                    <ArrowUpRight className="w-4 h-4" />
-                                    <span>+5%</span>
-                                </div>
+                                <h3 className="text-3xl font-bold text-gray-900 truncate">
+                                    {loading ? "..." : formatCurrency(stats?.payrollTotal || 0)}
+                                </h3>
                             </div>
                         </div>
                         <div className="bg-linear-to-br from-rose-50 to-rose-100 px-5 py-3">
                             <p className="text-sm text-rose-700">
-                                <span className="font-semibold">Échéance</span> dans 5 jours
+                                <span className="font-semibold">Coût estimé</span> des salaires
                             </p>
                         </div>
                     </div>
@@ -142,14 +177,55 @@ const Dashboard = () => {
                             </div>
                         </div>
 
-                        {/* Placeholder graphique */}
-                        <div className="h-64 bg-linear-to-br from-gray-50 to-gray-100 rounded-xl flex items-center justify-center border-2 border-dashed border-gray-200">
-                            <div className="text-center">
-                                <TrendingUp className="w-12 h-12 text-gray-300 mx-auto mb-2" />
-                                <p className="text-gray-400 text-sm">Graphique de performance</p>
-                                <p className="text-gray-300 text-xs">Ajoutez votre bibliothèque de graphiques ici</p>
+                        {/* ApexCharts - Top 10 Performers */}
+                        {topPerformers.length > 0 ? (
+                            <Chart
+                                type="bar"
+                                height={260}
+                                options={{
+                                    chart: {
+                                        toolbar: { show: false },
+                                        fontFamily: 'inherit'
+                                    },
+                                    plotOptions: {
+                                        bar: {
+                                            horizontal: true,
+                                            borderRadius: 6,
+                                            distributed: true
+                                        }
+                                    },
+                                    colors: ['#8b5cf6', '#a78bfa', '#c4b5fd', '#ddd6fe', '#ede9fe', '#7c3aed', '#6d28d9', '#5b21b6', '#4c1d95', '#9333ea'],
+                                    dataLabels: {
+                                        enabled: true,
+                                        formatter: (val: number) => `${val} tâches`,
+                                        style: { fontSize: '12px', colors: ['#fff'] }
+                                    },
+                                    xaxis: {
+                                        categories: topPerformers.map(p => p.name),
+                                        labels: { style: { fontSize: '12px' } }
+                                    },
+                                    yaxis: {
+                                        labels: { style: { fontSize: '12px' } }
+                                    },
+                                    legend: { show: false },
+                                    tooltip: {
+                                        y: { formatter: (val: number) => `${val} tâches terminées` }
+                                    }
+                                }}
+                                series={[{
+                                    name: 'Tâches terminées',
+                                    data: topPerformers.map(p => p.tasksCompleted)
+                                }]}
+                            />
+                        ) : (
+                            <div className="h-64 bg-linear-to-br from-gray-50 to-gray-100 rounded-xl flex items-center justify-center border-2 border-dashed border-gray-200">
+                                <div className="text-center">
+                                    <TrendingUp className="w-12 h-12 text-gray-300 mx-auto mb-2" />
+                                    <p className="text-gray-400 text-sm">Aucune tâche terminée</p>
+                                    <p className="text-gray-300 text-xs">Les performances s'afficheront ici</p>
+                                </div>
                             </div>
-                        </div>
+                        )}
                     </div>
 
                     {/* Activité récente */}

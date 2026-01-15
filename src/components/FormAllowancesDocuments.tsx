@@ -1,7 +1,14 @@
-import { Bus, FileText, Heart, Shield, Upload } from "lucide-react"
+import { Bus, FileText, Heart, Shield, Upload, CheckCircle, XCircle } from "lucide-react"
 import type { formDocumentsType } from "../types"
 
-const FormAllowancesDocuments = ({ formDocuments, setFormDocuments }: { formDocuments: formDocumentsType, setFormDocuments: React.Dispatch<React.SetStateAction<formDocumentsType>> }) => {
+interface Props {
+    formDocuments: formDocumentsType;
+    setFormDocuments: React.Dispatch<React.SetStateAction<formDocumentsType>>;
+    selectedFiles: { [key: string]: File | null };
+    setSelectedFiles: React.Dispatch<React.SetStateAction<{ [key: string]: File | null }>>;
+}
+
+const FormAllowancesDocuments = ({ formDocuments, setFormDocuments, selectedFiles, setSelectedFiles }: Props) => {
 
     const Handlechange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value, checked, type } = e.target
@@ -29,8 +36,6 @@ const FormAllowancesDocuments = ({ formDocuments, setFormDocuments }: { formDocu
                 ...prev, [name]: value
             }))
         }
-
-        console.log(formDocuments)
     }
 
     // Liste de tous les avantages disponibles
@@ -48,28 +53,33 @@ const FormAllowancesDocuments = ({ formDocuments, setFormDocuments }: { formDocu
     // Vérifier si tous les avantages sont sélectionnés
     const allSelected = allBenefits.every(benefit => formDocuments.employeeBenefits.includes(benefit))
 
-
-    // Fonction pour gérer l'upload de documents
-    const handleDocumentUpload = (documentKey: string) => {
-        // Créer un input file invisible et déclencher le click
+    // Fonction pour gérer la sélection locale de documents
+    const handleDocumentSelect = (documentKey: string) => {
         const input = document.createElement('input')
         input.type = 'file'
         input.accept = '.pdf,.doc,.docx,.png,.jpg,.jpeg'
+
         input.onchange = (e) => {
             const file = (e.target as HTMLInputElement).files?.[0]
             if (file) {
-                // Note: In a real app we'd upload the file. Here we just store the name as per current logic
-                // but types say string.
-                setFormDocuments(prev => ({
+                // On stocke le fichier localement pour l'upload final
+                setSelectedFiles(prev => ({
                     ...prev,
-                    documents: {
-                        ...prev.documents,
-                        [documentKey]: file.name
-                    }
+                    [documentKey]: file
                 }))
             }
         }
         input.click()
+    }
+
+    // Pour retirer un fichier sélectionné
+    const handleRemoveFile = (e: React.MouseEvent, documentKey: string) => {
+        e.stopPropagation(); // Empêcher l'ouverture du sélecteur
+        setSelectedFiles(prev => {
+            const newState = { ...prev };
+            newState[documentKey] = null;
+            return newState;
+        });
     }
 
     // Mapping des labels vers les clés du state
@@ -165,24 +175,45 @@ const FormAllowancesDocuments = ({ formDocuments, setFormDocuments }: { formDocu
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-3">
-                    {Object.entries(documentMapping).map(([label, key]) => (
-                        <div key={label} className="flex items-center gap-4 p-3 bg-white rounded-lg border border-gray-200 hover:border-violet-300 transition-colors">
-                            <p className="text-sm font-medium text-gray-700 w-32">{label}</p>
-                            <div
-                                onClick={() => handleDocumentUpload(key)}
-                                className="flex-1 border-2 border-dashed border-gray-300 rounded-lg p-3 text-center hover:border-violet-400 hover:bg-violet-50/30 cursor-pointer transition-all group"
-                            >
-                                {formDocuments.documents[key] ? (
-                                    <p className="text-xs font-medium text-green-600">{formDocuments.documents[key]}</p>
-                                ) : (
-                                    <>
-                                        <Upload className="w-5 h-5 text-gray-400 mx-auto mb-1 group-hover:text-violet-500" />
-                                        <p className="text-xs font-medium text-gray-500 group-hover:text-violet-600">Cliquer pour téléverser</p>
-                                    </>
-                                )}
+                    {Object.entries(documentMapping).map(([label, key]) => {
+                        const file = selectedFiles[key]
+
+                        return (
+                            <div key={label} className="flex items-center gap-4 p-3 bg-white rounded-lg border border-gray-200 hover:border-violet-300 transition-colors">
+                                <p className="text-sm font-medium text-gray-700 w-32">{label}</p>
+                                <div
+                                    onClick={() => handleDocumentSelect(key)}
+                                    className={`flex-1 border-2 border-dashed rounded-lg p-3 text-center transition-all group ${file ? "border-green-300 bg-green-50/30 cursor-pointer hover:bg-green-50" :
+                                            "border-gray-300 hover:border-violet-400 hover:bg-violet-50/30 cursor-pointer"
+                                        }`}
+                                >
+                                    {file ? (
+                                        <div className="relative group/file">
+                                            <div className="flex flex-col items-center justify-center py-1">
+                                                <CheckCircle className="w-5 h-5 text-green-500 mb-1" />
+                                                <p className="text-xs font-medium text-green-700 truncate max-w-[120px]">{file.name}</p>
+                                            </div>
+                                            {/* Hover to delete/change */}
+                                            <div className="absolute inset-0 bg-white/90 flex items-center justify-center opacity-0 group-hover/file:opacity-100 transition-opacity gap-2">
+                                                <button
+                                                    onClick={(e) => handleRemoveFile(e, key)}
+                                                    className="p-1 hover:bg-red-50 rounded text-red-500"
+                                                    title="Supprimer"
+                                                >
+                                                    <XCircle className="w-5 h-5" />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <>
+                                            <Upload className="w-5 h-5 text-gray-400 mx-auto mb-1 group-hover:text-violet-500" />
+                                            <p className="text-xs font-medium text-gray-500 group-hover:text-violet-600">Cliquer pour choisir</p>
+                                        </>
+                                    )}
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        )
+                    })}
                 </div>
             </div>
         </div>

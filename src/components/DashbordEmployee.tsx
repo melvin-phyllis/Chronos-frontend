@@ -2,6 +2,7 @@ import { Bell, Calendar, Clock, PieChart, Wallet } from "lucide-react";
 import { useEffect } from "react";
 import getinfouser from "../controllers/getinfouser";
 import EmployeeStore from "../Store/EmployeeStore";
+import PresenceWidget from "./PresenceWidget";
 
 const DashbordEmployee = ({ setCurrentLink }: { setCurrentLink: React.Dispatch<React.SetStateAction<string>> }) => {
     const { Employee, setEmployee } = EmployeeStore()
@@ -39,7 +40,10 @@ const DashbordEmployee = ({ setCurrentLink }: { setCurrentLink: React.Dispatch<R
                 </div>
 
                 {/* Quick Stats Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                    {/* Presence Widget */}
+                    <PresenceWidget />
+
                     {/* Leave Balance */}
                     <div
                         onClick={() => setCurrentLink('/my-leave')}

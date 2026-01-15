@@ -1,20 +1,20 @@
-import { Calendar, FileText, PieChart, Wallet, LayoutGrid } from "lucide-react"
+import { FileText, PieChart, Wallet, LayoutGrid, MessageSquare, ClipboardList } from "lucide-react"
 import { useState } from "react"
 import AppSidebar from "../../../components/Appside"
 import MyHolidays from "../../../components/MyHolidays"
 import DashbordEmployee from "../../../components/DashbordEmployee"
 import MyPayEmployee from "../../../components/MyPayEmployee"
 import MyDocumentsEmployee from "../../../components/MyDocumentsEmployee"
-import MyPlanEmployee from "../../../components/MyPlanEmployee"
 import Profile from "../../../components/Profile"
-import CalendarComponent from "@/components/CalendarComponent"
+import MySurveys from "../../../components/MySurveys"
+import MyTasks from "../../../components/MyTasks"
 
 const employeeMenuItems = [
     { title: "Tableau de bord", url: "/dashbord/employee", icon: LayoutGrid },
-    { title: "Mon Planning", url: "/my-schedule", icon: Calendar },
-    { title: "Calendrier", url: "/my-calendar", icon: Calendar },
+    { title: "Mes Tâches", url: "/my-tasks", icon: ClipboardList },
     { title: "Mes Congés", url: "/my-leave", icon: PieChart },
     { title: "Ma Paie", url: "/my-payroll", icon: Wallet },
+    { title: "Sondages", url: "/my-surveys", icon: MessageSquare },
     { title: "Mes Documents", url: "/my-documents", icon: FileText },
 ];
 
@@ -35,21 +35,23 @@ const Employee = () => {
             return <MyPayEmployee />
         }
 
+        if (currentLink === "/my-surveys") {
+            return <MySurveys />
+        }
+
         if (currentLink === "/my-documents") {
             return <MyDocumentsEmployee />
         }
 
-        if (currentLink === "/my-schedule") {
-            return <MyPlanEmployee />
+        if (currentLink === "/my-tasks") {
+            return <MyTasks />
         }
 
         if (currentLink === "/profile") {
             return <Profile />
         }
 
-        if (currentLink === "/my-calendar") {
-            return <CalendarComponent />
-        }
+
     }
 
     return (

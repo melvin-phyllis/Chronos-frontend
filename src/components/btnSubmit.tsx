@@ -58,7 +58,7 @@ const BtnSubmit = ({ step, setStep, load, handleReset }: {
                         ) : (
 
                             /* Bouton Soumettre - à afficher à l'étape 3 */
-                            <label htmlFor="my_modal_6" className="btn">Ajouter </label>
+                            <label htmlFor="my_modal_7" className="btn">Ajouter </label>
 
                         )}
                     </div>
@@ -66,18 +66,19 @@ const BtnSubmit = ({ step, setStep, load, handleReset }: {
             </div >
 
             {/* Put this part before </body> tag */}
-            <input type="checkbox" id="my_modal_6" className="modal-toggle" />
+            <input type="checkbox" id="my_modal_7" className="modal-toggle" />
             <div className="modal" role="dialog">
                 <div className="modal-box">
                     <h3 className="text-lg font-bold">Ajouter un employé</h3>
                     <p className="py-4">Voulez-vous vraiment ajouter ce employé ?</p>
 
                     <div className="modal-action">
-                        <button disabled={load} type={"submit"} className="flex items-center gap-2 px-6 py-2.5 bg-emerald-600 text-white rounded-xl text-sm font-medium hover:bg-emerald-700 transition-all shadow-sm">
+                        <button disabled={load} type={"submit"} 
+                        className={`flex btn items-center gap-2 px-6 py-2.5 ${load ? "cursor-not-allowed bg-gray-100 text-gray-400 " : "bg-emerald-600 hover:bg-emerald-700"} text-white rounded-xl text-sm font-medium hover:bg-emerald-700 transition-all shadow-sm`}>
                             <Check className="w-4 h-4" />
                             Ajouter
                         </button>
-                        <label htmlFor="my_modal_6" className="btn">Annuler</label>
+                        <label htmlFor="my_modal_7" className="btn">Annuler</label>
                     </div>
                 </div>
             </div>

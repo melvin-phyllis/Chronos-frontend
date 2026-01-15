@@ -1,4 +1,4 @@
-import { ChevronDown, CirclePlus, Filter, Search, Users } from "lucide-react"
+import { ChevronDown, Filter, Search, Users } from "lucide-react"
 import { useEffect, useState } from "react"
 import filterSearch from "../controllers/filterSearch"
 import getEmployee from "../controllers/getEmployee"
@@ -6,7 +6,6 @@ import searchemployee from "../controllers/searchemployee"
 import EmployeeStore from "../Store/EmployeeStore"
 import type { employeeType } from "../types"
 import EmployeeCardsGrid from "./EmployeeCardsGrid"
-import EmployeeDetails from "./EmployeeDetails"
 
 const Employees = () => {
     const { ListEmployees, setEmployees } = EmployeeStore()
@@ -143,7 +142,7 @@ const Employees = () => {
 
             {/* Employee Cards Grid */}
             <EmployeeCardsGrid ListEmployees={ListEmployees} employeeSearch={employeeSearch} />
-            
+
         </div>
     )
 }

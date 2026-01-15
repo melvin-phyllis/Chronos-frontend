@@ -80,8 +80,8 @@ const ProfileCard = ({ employee }: { employee: employeeType | undefined }) => {
                                 <User className="w-4 h-4 text-violet-600" />
                             </div>
                             <div>
-                                <p className="text-xs text-gray-500">Gender</p>
-                                <p className="text-sm font-semibold text-gray-800">Female</p>
+                                <p className="text-xs text-gray-500">Genre</p>
+                                <p className="text-sm font-semibold text-gray-800">{employee?.gender || "Non renseigné"}</p>
                             </div>
                         </div>
 

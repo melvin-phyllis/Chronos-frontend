@@ -21,7 +21,7 @@ export const login = async (
         )
 
         if (!req.data) return
-
+        console.log(req?.data)
         if (req.data.success == true) {
             console.log(formlogin)
             console.log(req?.data.user.role)
@@ -45,9 +45,19 @@ export const login = async (
 
 
 
-    } catch (error) {
-        console.log(error)
-        return ToastError("Erreur de connexion")
+    } catch (error: any) {
+        console.log("Erreur Login:", error)
+
+        if (error.code === "ERR_NETWORK" || error.message === "Network Error") {
+            return ToastError("Impossible de contacter le serveur (Serveur éteint ?)")
+        }
+
+        if (error.response) {
+            // Le serveur a répondu avec un code d'erreur (4xx, 5xx)
+            return ToastError(error.response.data?.message || "Erreur de connexion")
+        }
+
+        return ToastError("Une erreur inconnue est survenue")
 
     } finally {
         setLoading(false)

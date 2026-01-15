@@ -24,12 +24,12 @@ const submitLeaveRequest = async (
         }
 
 
-        formLeaveRequest.intervaltime = intervalTime(formLeaveRequest?.startDate, formLeaveRequest?.endDate)
+        formLeaveRequest.intervaltime = intervalTime(formLeaveRequest?.startDate as string, formLeaveRequest?.endDate as string)
 
         if (formLeaveRequest.intervaltime > 30 && formLeaveRequest?.type == "paid") return ToastError("Nombre de conge paye autoriser est de -30 jours")
 
-            formLeaveRequest.startDate = new Date(formLeaveRequest?.startDate).toISOString()
-        formLeaveRequest.endDate = new Date(formLeaveRequest?.endDate).toISOString()
+        formLeaveRequest.startDate = new Date(formLeaveRequest?.startDate as string).toISOString()
+        formLeaveRequest.endDate = new Date(formLeaveRequest?.endDate as string).toISOString()
 
         const req = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/leave-request/${Employee?.employeeCode}`, formLeaveRequest,
             { withCredentials: true }
@@ -39,11 +39,11 @@ const submitLeaveRequest = async (
         ref?.current?.reset()
         addrequestleave({ ...formLeaveRequest, ...req.data?.data })
         ToastSuccess("Demande de congé soumise avec succès")
-    } catch (error:any) {
+    } catch (error: any) {
 
         console.log(error)
         ToastError("Une erreur est survenue veuillez ressayer plus tard")
-        if(error.response.data.message) return  ToastError(error.response.data.message)
+        if (error.response.data.message) return ToastError(error.response.data.message)
     }
 }
 

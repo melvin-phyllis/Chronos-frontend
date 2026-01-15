@@ -13,11 +13,7 @@ const createEmployee = async (
         setLoad(true)
         e?.preventDefault()
 
-        if (formEmployee.password !== formEmployee.passwordconfirm) return ToastError("Les mots de passe ne correspondent pas.")
-
-        const { passwordconfirm, ...newformEmployee } = formEmployee
-
-        const req = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/addEmployee`, newformEmployee,
+        const req = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/addEmployee`, formEmployee,
             { withCredentials: true }
         )
 

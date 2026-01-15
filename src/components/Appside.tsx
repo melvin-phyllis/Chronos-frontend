@@ -3,10 +3,13 @@ import {
     Calendar,
     CreditCard,
     FileX,
-    LayoutGrid,
     TrendingUp,
     UserCheck,
     Users,
+    MessageSquare,
+    ClipboardList,
+    CalendarDays,
+    BarChart3,
 } from "lucide-react";
 
 import { useLocation } from "react-router-dom";
@@ -14,13 +17,16 @@ import Profiluser from "./Profiluser";
 
 
 const menuItems = [
-    { title: "Tableau de bord", url: "/", icon: LayoutGrid },
+    { title: "Performance", url: "/performance", icon: TrendingUp },
     { title: "Employés", url: "/employees", icon: Users },
     { title: "Nouveau employé", url: "/new-employees", icon: Calendar },
     { title: "Présences", url: "/attendance", icon: UserCheck },
-    { title: "Performance", url: "/performance", icon: TrendingUp },
-    { title: "Paie", url: "/payroll", icon: CreditCard },
+    { title: "Tâches", url: "/tasks", icon: ClipboardList },
+    { title: "Calendrier Tâches", url: "/task-calendar", icon: CalendarDays },
+    { title: "Sondages", url: "/surveys", icon: MessageSquare },
     { title: "Gestion des congés", url: "/leave", icon: FileX },
+    { title: "Paie", url: "/payroll", icon: CreditCard },
+    { title: "Statistiques", url: "/advanced-stats", icon: BarChart3 },
 ];
 
 const AppSidebar = ({ setLinknav, items = menuItems }: { setLinknav: React.Dispatch<React.SetStateAction<string>>, items?: { title: string, url: string, icon: any }[] }) => {

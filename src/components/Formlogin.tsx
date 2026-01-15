@@ -1,59 +1,118 @@
 import { useState } from "react"
-import { FaRegEye, FaRegEyeSlash } from "react-icons/fa"
+import { Eye, EyeOff, Loader2, Mail, Lock } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { login } from "../controllers/login"
 import type { ForminputType } from "../types"
 
 const Formlogin = () => {
-
     const navigate = useNavigate()
-    const [show, setShow] = useState(true)
+    const [show, setShow] = useState(false)
     const [load, setLoading] = useState(false)
     const [formlogin, setFormlogin] = useState<ForminputType>({
         email: "",
         password: ""
     })
 
-    const Handlechange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target
         setFormlogin(prev => ({
             ...prev, [name]: value
         }))
     }
-    return (
-        <>
-            <form action="" className=" p-5 space-y-10" onSubmit={(e) => login(e, formlogin, navigate, setLoading)}>
-                <div className="flex flex-col space-y-3">
-                    <label htmlFor="email">Identifiant</label>
-                    <input required type="email" name="email" id="email"
-                        onChange={(e) => Handlechange(e)}
-                        placeholder=" votre@email.com" className="bg-gray-100 p-3 rounded-xl outline-violet-300" />
-                </div>
-                <div className="flex flex-col space-y-3">
-                    <label htmlFor="password">Mot de passe</label>
-                    <div className="w-full flex items-center divpass bg-gray-100 p-3 rounded-xl gap-2 outline-violet-300">
-                        <input required type={show ? "password" : 'text'} name="password" id="password"
-                            onChange={(e) => Handlechange(e)}
-                            placeholder="Saisissez votre mot de passe sécurisé" className=" w-full outline-none inputpass" />
 
-                        <button className="btn btn-sm btn-neutral btn-outline bg-violet-500 " type="button"
-                            onClick={() => {
-                                setShow(show ? false : true)
-                            }}>
-                            {show ? (<FaRegEye className="text-2xl" />) : <FaRegEyeSlash className="text-2xl" />}
-                        </button>
+    return (
+        <form className="space-y-5" onSubmit={(e) => login(e, formlogin, navigate, setLoading)}>
+            {/* Email Field */}
+            <div className="space-y-2">
+                <label htmlFor="email" className="text-sm font-semibold text-gray-700">
+                    Adresse email
+                </label>
+                <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <Mail className="w-5 h-5 text-gray-400" />
                     </div>
+                    <input
+                        required
+                        type="email"
+                        name="email"
+                        id="email"
+                        onChange={handleChange}
+                        placeholder="votre@email.com"
+                        className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border-2 border-gray-100 rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-violet-500 focus:bg-white transition-all"
+                    />
                 </div>
-                <div className="flex  justify-between">
-                    <label htmlFor="savelogin" className="flex gap-2 items-center">
-                        <input type="checkbox" name="savelogin" id="savelogin" />
-                        <span className="text-sm font-semibold"> Rester connecté</span>
-                    </label>
-                    <a href="" className="text-sm underline font-semibold ">Identifiants oubliés ?</a>
+            </div>
+
+            {/* Password Field */}
+            <div className="space-y-2">
+                <label htmlFor="password" className="text-sm font-semibold text-gray-700">
+                    Mot de passe
+                </label>
+                <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <Lock className="w-5 h-5 text-gray-400" />
+                    </div>
+                    <input
+                        required
+                        type={show ? "text" : "password"}
+                        name="password"
+                        id="password"
+                        onChange={handleChange}
+                        placeholder="••••••••••"
+                        className="w-full pl-12 pr-12 py-3.5 bg-gray-50 border-2 border-gray-100 rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-violet-500 focus:bg-white transition-all"
+                    />
+                    <button
+                        type="button"
+                        onClick={() => setShow(!show)}
+                        className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-violet-600 transition-colors"
+                    >
+                        {show ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    </button>
                 </div>
-                <button disabled={load} className={`btn ${load ? "bg-gray-200" : 'bg-violet-500'} w-full rounded-xl p-2 font-bold text-white w-full"`} >{load ? "chargement ..." : "Se connecter"} </button>
-            </form>
-        </>
+            </div>
+
+            {/* Remember & Forgot */}
+            <div className="flex items-center justify-between">
+                <label htmlFor="remember" className="flex items-center gap-2 cursor-pointer group">
+                    <input
+                        type="checkbox"
+                        name="remember"
+                        id="remember"
+                        className="w-4 h-4 rounded border-gray-300 text-violet-600 focus:ring-violet-500 cursor-pointer"
+                    />
+                    <span className="text-sm text-gray-600 group-hover:text-gray-900 transition-colors">
+                        Se souvenir de moi
+                    </span>
+                </label>
+                <a href="#" className="text-sm font-medium text-violet-600 hover:text-violet-700 hover:underline transition-colors">
+                    Mot de passe oublié ?
+                </a>
+            </div>
+
+            {/* Submit Button */}
+            <button
+                type="submit"
+                disabled={load}
+                className={`
+                    w-full py-4 rounded-xl font-semibold text-white
+                    flex items-center justify-center gap-2
+                    transition-all duration-200
+                    ${load
+                        ? 'bg-gray-300 cursor-not-allowed'
+                        : 'bg-gradient-to-r from-violet-600 to-purple-600 hover:shadow-lg hover:shadow-violet-500/30 hover:-translate-y-0.5 active:translate-y-0'
+                    }
+                `}
+            >
+                {load ? (
+                    <>
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                        Connexion en cours...
+                    </>
+                ) : (
+                    'Se connecter'
+                )}
+            </button>
+        </form>
     )
 }
 

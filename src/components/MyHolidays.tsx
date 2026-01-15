@@ -1,50 +1,38 @@
-import EmployeeStore from "@/Store/EmployeeStore"
-import type { PaidLeaveType } from "@/types"
+import type { LeaveBalanceType } from "@/types"
 import { Clock, FileText, PieChart, Plus } from "lucide-react"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import LeaveRequestHistory from "./LeaveRequestHistory"
 import NewRequestHolidays from "./NewRequestHolidays"
-import paidLeavePercentage from "@/controllers/paidLeavePercentage"
+import fetchBalance from "@/controllers/fetchBalance"
 
 const MyHolidays = () => {
-    const { Listrequestleave } = EmployeeStore()
-
-    const [stattotal, setStatetotal] = useState<PaidLeaveType>({
-        PaidLeave: 0,
-        SickLeaveOther: 0,
-        UnpaidLeave: 0
+    // State pour le solde
+    const [balance, setBalance] = useState<LeaveBalanceType>({
+        conges_payes_total: 30,
+        conges_payes_pris: 0,
+        conges_payes_restants: 30,
+        conges_maladie_pris: 0,
+        autres_conges_pris: 0
     });
 
+    // État partagé pour déclencher le rafraîchissement de l'historique
+    const [refreshHistoryTrigger, setRefreshHistoryTrigger] = useState(0);
+
+    // Fonction pour tout rafraîchir (Solde + Historique)
+    const refreshAllData = useCallback(() => {
+        fetchBalance(setBalance); // Rafraîchir le solde
+        setRefreshHistoryTrigger(prev => prev + 1); // Rafraîchir l'historique via prop
+    }, []);
+
     useEffect(() => {
-        const calculateLeaveStats = () => {
-            // Calculer tous les totaux en une seule fois
-            const stats = Listrequestleave.reduce((acc, item) => {
-                if (item?.status === "approved") {
-                    const days = item?.intervaltime || 0;
+        fetchBalance(setBalance);
+    }, []);
 
-                    if (item?.type === "paid") {
-                        acc.PaidLeave += days;
-                    } else if (item?.type === "sick") {
-                        acc.SickLeaveOther += days;
-                    } else if (item?.type === "unpaid") {
-                        acc.UnpaidLeave += days;
-                    }
-                }
-                return acc;
-            }, {
-                PaidLeave: 0,
-                SickLeaveOther: 0,
-                UnpaidLeave: 0
-            });
-
-            // Mettre à jour le state UNE SEULE fois
-            setStatetotal(stats);
-        };
-
-        calculateLeaveStats();
-    }, [Listrequestleave]); // Ajouter la dépendance
-
-
+    // Helper pour le pourcentage visuel
+    const getPercentage = () => {
+        if (balance.conges_payes_total === 0) return 0;
+        return (balance.conges_payes_pris / balance.conges_payes_total) * 100;
+    };
 
     return (
         <>
@@ -55,7 +43,7 @@ const MyHolidays = () => {
                         <h1 className="text-2xl font-bold text-gray-900">Mes Congés</h1>
                         <p className="text-sm text-gray-500 mt-1">Gérez vos absences et suivez vos soldes</p>
                     </div>
-                    <label htmlFor="my_modal_8" className="btn px-4 py-2 bg-violet-600 hover:bg-violet-700 text-white text-sm font-medium rounded-xl shadow-sm shadow-violet-200 transition-colors flex items-center gap-2">
+                    <label htmlFor="my_modal_8" className="btn px-4 py-2 bg-violet-600 hover:bg-violet-700 text-white text-sm font-medium rounded-xl shadow-sm shadow-violet-200 transition-colors flex items-center gap-2 cursor-pointer">
                         <Plus className="w-4 h-4" />
                         Faire une demande
                     </label>
@@ -77,14 +65,14 @@ const MyHolidays = () => {
                         </div>
                         <div className="flex items-baseline gap-1">
 
-                            <span className="text-3xl font-bold text-gray-900">{30-stattotal?.PaidLeave!} </span>
+                            <span className="text-3xl font-bold text-gray-900">{balance.conges_payes_restants} </span>
                             <span className="text-sm text-gray-500">jours restants</span>
 
                         </div>
                         <div className="mt-3 w-full bg-gray-100 rounded-full h-1.5">
-                            <div className="bg-violet-500 h-1.5 rounded-full" style={{ width: `${paidLeavePercentage(stattotal)}%` }}></div>
+                            <div className="bg-violet-500 h-1.5 rounded-full" style={{ width: `${getPercentage()}%` }}></div>
                         </div>
-                        <p className="text-xs text-gray-400 mt-2">Sur un total de 25 jours</p>
+                        <p className="text-xs text-gray-400 mt-2">Sur un total de {balance.conges_payes_total} jours</p>
                     </div>
 
                     {/* RTT / Maladie (Example) */}
@@ -99,11 +87,11 @@ const MyHolidays = () => {
                             <h3 className="font-semibold text-gray-900">Maladie / Autres</h3>
                         </div>
                         <div className="flex items-baseline gap-1">
-                            <span className="text-3xl font-bold text-gray-900">{stattotal?.SickLeaveOther}</span>
+                            <span className="text-3xl font-bold text-gray-900">{balance.conges_maladie_pris}</span>
                             <span className="text-sm text-gray-500">jours pris</span>
                         </div>
 
-                        <p className="text-xs text-gray-400 mt-2">Année courante 2024</p>
+                        <p className="text-xs text-gray-400 mt-2">Année courante {new Date().getFullYear()}</p>
                     </div>
 
                     {/* Sans Solde */}
@@ -115,10 +103,10 @@ const MyHolidays = () => {
                             <div className="p-2 bg-orange-50 rounded-lg text-orange-600">
                                 <FileText className="w-5 h-5" />
                             </div>
-                            <h3 className="font-semibold text-gray-900">Sans Solde</h3>
+                            <h3 className="font-semibold text-gray-900">Autres / Sans Solde</h3>
                         </div>
                         <div className="flex items-baseline gap-1">
-                            <span className="text-3xl font-bold text-gray-900">{stattotal?.UnpaidLeave}</span>
+                            <span className="text-3xl font-bold text-gray-900">{balance.autres_conges_pris}</span>
                             <span className="text-sm text-gray-500">jours pris</span>
                         </div>
 
@@ -127,25 +115,26 @@ const MyHolidays = () => {
                 </div>
 
                 {/* History Table */}
-                <LeaveRequestHistory />
+                <LeaveRequestHistory
+                    refreshTrigger={refreshHistoryTrigger}
+                    onActionComplete={refreshAllData}
+                />
             </div>
 
             {/* The button to open modal */}
-
-
             {/* Put this part before </body> tag */}
             <input type="checkbox" id="my_modal_8" className="modal-toggle" />
             <div className="modal" role="dialog">
                 <div className="modal-box">
-                    <NewRequestHolidays />
+                    <NewRequestHolidays onSuccess={refreshAllData} />
                     <div className="modal-action hidden">
                         <label htmlFor="my_modal_8" id="my_modal_8" className="btn">Close!</label>
                     </div>
                 </div>
             </div>
-
         </>
     )
 }
 
 export default MyHolidays
+
